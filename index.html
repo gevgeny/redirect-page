@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      .card {
+        background: white;
+        border: 1px solid #cbd5e1;
+        padding: 1.5rem 2rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+      }
+      .hint { margin-top: 0.75rem; color: #475569; font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Waiting to redirect back...</h1>
+      <p id="status" class="hint">Redirecting in 3 seconds…</p>
+    </div>
+
+    <script>
+      function getQueryParam(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      function safeRedirect(url) {
+        if (!url) {
+          document.getElementById('status').textContent = 'Missing backUrl parameter. Cannot redirect.';
+          return;
+        }
+
+        try {
+          const dest = new URL(url, window.location.href);
+          if (!['http:', 'https:'].includes(dest.protocol)) {
+            document.getElementById('status').textContent = 'Invalid redirect URL protocol.';
+            return;
+          }
+
+          window.location.href = dest.href;
+        } catch (err) {
+          document.getElementById('status').textContent = 'Invalid backUrl parameter. Cannot redirect.';
+        }
+      }
+
+      setTimeout(() => {
+        const backUrl = getQueryParam('backUrl');
+        safeRedirect(backUrl);
+      }, 3000);
+    </script>
+  </body>
+</html>
